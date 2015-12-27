@@ -69,7 +69,7 @@ type ExampleAiModuleFSharp() =
             match depotOpt with
             | Some depot ->
                 if depot.TrainingQueue.Count = 0
-                && Game.Self.SupplyTotal() - Game.Self.SupplyUsed() >= price.Supply
+                && Game.Self.SupplyTotal - Game.Self.SupplyUsed >= price.Supply
                 && Game.Self.Units |> Seq.filter (fun (u:Unit) -> u.UnitType = workerType) |> Seq.length < 16 then
                     trainWorker depot
             | None -> ()

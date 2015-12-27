@@ -41,7 +41,7 @@ namespace ExampleTournamentModule
 			Game.SetLocalSpeed(0);
 			Game.SetFrameSkip(64);
 
-			Events.Add(new Position(Events.Self.StartLocation + new TilePosition(64, 48)), 100, 100, null);
+			Events.Add(Position.Rescale(Events.Self.StartLocation + new TilePosition(64, 48)), 100, 100, null);
 		}
 
 		public override void OnEnd(bool isWinner)
@@ -86,7 +86,7 @@ namespace ExampleTournamentModule
 			Game.DrawTextScreen(2, 2, "\x04{0}\n\x07APM: {1}{2}\n\x07Highest APM: {3}{4}", Game.MapName, color, thisApm, hcolor, _maxApm);
 			// draw supplies
 			if (Events.IsJoiner)
-				Game.DrawTextScreen(560, 40, "\x07Supply: {0}/{1}", Game.Self.SupplyUsed() / 2, Game.Self.SupplyTotal() / 2);
+				Game.DrawTextScreen(560, 40, "\x07Supply: {0}/{1}", Game.Self.SupplyUsed / 2, Game.Self.SupplyTotal / 2);
 
 			foreach(var unit in Events.Self.Units.Where(u => u.Exists))
 			{

@@ -100,7 +100,7 @@ namespace ExampleAIModule
 			//if our depot queue is empty and we have enouth supply and less than 16 workers
 			if(depot != null
 				&& !depot.TrainingQueue.Any()
-				&& Game.Self.SupplyTotal() - Game.Self.SupplyUsed() >= price.Supply
+				&& Game.Self.SupplyTotal - Game.Self.SupplyUsed >= price.Supply
 				&& Game.Self.Units.Count(u => u.UnitType == workerType) < 16)
 			{
 				if(depot.UnitType.Race.Type != RaceType.Zerg)

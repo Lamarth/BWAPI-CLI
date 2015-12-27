@@ -1,0 +1,248 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source code files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header files\BWAPI">
+      <UniqueIdentifier>{5e1e280d-415c-43f4-a203-d1f44754744f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\BWAPI\Enum">
+      <UniqueIdentifier>{88b638e3-3074-4d6a-8ffd-2ac5ea78c83a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source code files\BWAPI">
+      <UniqueIdentifier>{7dc52671-da05-48fe-9493-06209c60b7d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\BWAPI\Client">
+      <UniqueIdentifier>{696579d9-1497-416d-bf92-fb9a219506c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source code files\BWAPI\Client">
+      <UniqueIdentifier>{62ac9cd7-7649-4e12-806c-a82d22569ad3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BWAPI\UnitType.cpp">
+      <Filter>Source code files\BWAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="BWAPI\Race.cpp">
+      <Filter>Source code files\BWAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="AssemblyInfo.cpp">
+      <Filter>Source code files</Filter>
+    </ClCompile>
+    <ClCompile Include="BWAPI\Position.cpp">
+      <Filter>Source code files\BWAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="BWAPI\Region.cpp">
+      <Filter>Source code files\BWAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="BWAPI\Weapon.cpp">
+      <Filter>Source code files\BWAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="BWAPI\Tech.cpp">
+      <Filter>Source code files\BWAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="BWAPI\Force.cpp">
+      <Filter>Source code files\BWAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="BWAPI\Player.cpp">
+      <Filter>Source code files\BWAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="BWAPI\Bullet.cpp">
+      <Filter>Source code files\BWAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="BWAPI\Game.cpp">
+      <Filter>Source code files\BWAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="BWAPI\Upgrade.cpp">
+      <Filter>Source code files\BWAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="BWAPI\Event.cpp">
+      <Filter>Source code files\BWAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="BWAPI\Unit.cpp">
+      <Filter>Source code files\BWAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="BWAPI\Price.cpp">
+      <Filter>Source code files\BWAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="BWAPI\UnitCommand.cpp">
+      <Filter>Source code files\BWAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="AiBase.cpp">
+      <Filter>Source code files</Filter>
+    </ClCompile>
+    <ClCompile Include="BWAPI\Client\Command.cpp">
+      <Filter>Source code files\BWAPI\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="BWAPI\Client\UnitCommand.cpp">
+      <Filter>Source code files\BWAPI\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="BWAPI\Client\Client.cpp">
+      <Filter>Source code files\BWAPI\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="EnumMapping.cpp">
+      <Filter>Source code files</Filter>
+    </ClCompile>
+    <ClCompile Include="Util.cpp">
+      <Filter>Source code files</Filter>
+    </ClCompile>
+    <ClCompile Include="TournamentBase.cpp">
+      <Filter>Source code files</Filter>
+    </ClCompile>
+    <ClCompile Include="BWAPI\TilePosition.cpp">
+      <Filter>Source code files\BWAPI</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BWAPI\Tech.h">
+      <Filter>Header files\BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Race.h">
+      <Filter>Header files\BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Weapon.h">
+      <Filter>Header files\BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\UnitType.h">
+      <Filter>Header files\BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Force.h">
+      <Filter>Header files\BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Player.h">
+      <Filter>Header files\BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Bullet.h">
+      <Filter>Header files\BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Game.h">
+      <Filter>Header files\BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Upgrade.h">
+      <Filter>Header files\BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Position.h">
+      <Filter>Header files\BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Region.h">
+      <Filter>Header files\BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Event.h">
+      <Filter>Header files\BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Unit.h">
+      <Filter>Header files\BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\BulletType.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\CoordinateType.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\DamageType.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\ErrorType.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\EventType.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\ExplosionType.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\Flag.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\GameType.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\Key.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\Latency.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\MouseButton.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\OrderType.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\PlayerType.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\RaceType.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\Targets.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\TechType.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\UnitCommandType.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\UnitSizeType.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\UnitType.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\UpgradeType.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\WeaponType.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\UnitCommand.h">
+      <Filter>Header files\BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Price.h">
+      <Filter>Header files\BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="AiBase.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Enum\TournamentAction.h">
+      <Filter>Header files\BWAPI\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Client\CommandType.h">
+      <Filter>Header files\BWAPI\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Client\Command.h">
+      <Filter>Header files\BWAPI\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Client\UnitCommand.h">
+      <Filter>Header files\BWAPI\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\Client\Client.h">
+      <Filter>Header files\BWAPI\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Util.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\IIdentifiedObject.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnumMapping.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="TournamentBase.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnumClassMap.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="BWAPI\TilePosition.h">
+      <Filter>Header files\BWAPI</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -342,9 +342,9 @@ namespace BWAPI
     ///
     /// @returns A Unitset object consisting of all the units that have any part of them on the
     /// given build tile.
-    Unitset getUnitsOnTile(int tileX, int tileY, const UnitFilter &pred = Filter::IsTransport) const;
+    Unitset getUnitsOnTile(int tileX, int tileY, const UnitFilter &pred = Filter::Null) const;
     /// @overload
-    Unitset getUnitsOnTile(BWAPI::TilePosition tile, const UnitFilter &pred = Filter::IsTransport) const;
+    Unitset getUnitsOnTile(BWAPI::TilePosition tile, const UnitFilter &pred = Filter::Null) const;
 
     /// <summary>Retrieves the set of accessible units that are in a given rectangle.</summary>
     ///
@@ -366,9 +366,9 @@ namespace BWAPI
     ///
     /// @returns A Unitset object consisting of all the units that have any part of them within the
     /// given rectangle bounds.
-    virtual Unitset getUnitsInRectangle(int left, int top, int right, int bottom, const UnitFilter &pred = Filter::IsTransport) const = 0;
+    virtual Unitset getUnitsInRectangle(int left, int top, int right, int bottom, const UnitFilter &pred = Filter::Null) const = 0;
     /// @overload
-    Unitset getUnitsInRectangle(BWAPI::Position topLeft, BWAPI::Position bottomRight, const UnitFilter &pred = Filter::IsTransport) const;
+    Unitset getUnitsInRectangle(BWAPI::Position topLeft, BWAPI::Position bottomRight, const UnitFilter &pred = Filter::Null) const;
 
     /// <summary>Retrieves the set of accessible units that are within a given radius of a
     /// position.</summary>
@@ -388,9 +388,9 @@ namespace BWAPI
     ///
     /// @returns A Unitset object consisting of all the units that have any part of them within the
     /// given radius from the center position.
-    Unitset getUnitsInRadius(int x, int y, int radius, const UnitFilter &pred = Filter::IsTransport) const;
+    Unitset getUnitsInRadius(int x, int y, int radius, const UnitFilter &pred = Filter::Null) const;
     /// @overload
-    Unitset getUnitsInRadius(BWAPI::Position center, int radius, const UnitFilter &pred = Filter::IsTransport) const;
+    Unitset getUnitsInRadius(BWAPI::Position center, int radius, const UnitFilter &pred = Filter::Null) const;
 
     /// <summary>Retrieves the closest unit to center that matches the criteria of the callback
     /// pred within an optional radius.</summary>
@@ -410,7 +410,7 @@ namespace BWAPI
     /// @retval nullptr If a suitable unit was not found.
     ///
     /// @see getBestUnit, UnitFilter
-    Unit getClosestUnit(Position center, const UnitFilter &pred = Filter::IsTransport, int radius = 999999) const;
+    Unit getClosestUnit(Position center, const UnitFilter &pred = Filter::Null, int radius = 999999) const;
 
     /// <summary>Retrieves the closest unit to center that matches the criteria of the callback
     /// pred within an optional rectangle.</summary>
@@ -436,7 +436,7 @@ namespace BWAPI
     /// </param>
     ///
     /// @see UnitFilter
-    virtual Unit getClosestUnitInRectangle(Position center, const UnitFilter &pred = Filter::IsTransport, int left = 0, int top = 0, int right = 999999, int bottom = 999999) const = 0;
+    virtual Unit getClosestUnitInRectangle(Position center, const UnitFilter &pred = Filter::Null, int left = 0, int top = 0, int right = 999999, int bottom = 999999) const = 0;
 
     /// <summary>Compares all units with pred to determine which of them is the best.</summary>
     /// All units are checked. If center and radius are specified, then it will check all units

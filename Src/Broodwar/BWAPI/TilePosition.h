@@ -51,8 +51,12 @@ namespace BroodWar
             static bool operator < (TilePosition^ first, TilePosition^ second);
             static TilePosition^ operator + (TilePosition^ first, TilePosition^ second);
             static TilePosition^ operator - (TilePosition^ first, TilePosition^ second);
+            static TilePosition^ operator * (TilePosition^ first, int second);
+            static TilePosition^ operator / (TilePosition^ first, int second);
             static TilePosition^ operator += (TilePosition^ first, TilePosition^ second);
             static TilePosition^ operator -= (TilePosition^ first, TilePosition^ second);
+            static TilePosition^ operator *= (TilePosition^ first, int second);
+            static TilePosition^ operator /= (TilePosition^ first, int second);
 
             static TilePosition^ Rescale(Position^ position);
         };

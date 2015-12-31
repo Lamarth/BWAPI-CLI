@@ -125,6 +125,14 @@ namespace BroodWar
         {
             return ConvertTilePosition(*(first->instance) - *(second->instance));
         }
+        TilePosition^ TilePosition::operator * (TilePosition^ first, int second)
+        {
+            return ConvertTilePosition(*(first->instance) * second);
+        }
+        TilePosition^ TilePosition::operator / (TilePosition^ first, int second)
+        {
+            return ConvertTilePosition(*(first->instance) / second);
+        }
         TilePosition^ TilePosition::operator += (TilePosition^ first, TilePosition^ second)
         {
             *(first->instance) += *(second->instance);
@@ -133,6 +141,16 @@ namespace BroodWar
         TilePosition^ TilePosition::operator -= (TilePosition^ first, TilePosition^ second)
         {
             *(first->instance) -= *(second->instance);
+            return first;
+        }
+        TilePosition^ TilePosition::operator *= (TilePosition^ first, int second)
+        {
+            *(first->instance) *= second;
+            return first;
+        }
+        TilePosition^ TilePosition::operator /= (TilePosition^ first, int second)
+        {
+            *(first->instance) /= second;
             return first;
         }
 

@@ -114,8 +114,8 @@ namespace BWAPI
 
       virtual bool      isFlagEnabled(int flag) const override;
       virtual void      enableFlag(int flag) override;
-      virtual Unitset   getUnitsInRectangle(int left, int top, int right, int bottom, const UnitFilter &pred = Filter::IsTransport) const override;
-      virtual Unit getClosestUnitInRectangle(Position center, const UnitFilter &pred = Filter::IsTransport, int left = 0, int top = 0, int right = 999999, int bottom = 999999) const override;
+      virtual Unitset   getUnitsInRectangle(int left, int top, int right, int bottom, const UnitFilter &pred = Filter::Null) const override;
+      virtual Unit getClosestUnitInRectangle(Position center, const UnitFilter &pred = Filter::Null, int left = 0, int top = 0, int right = 999999, int bottom = 999999) const override;
       virtual Unit getBestUnit(const BestUnitFilter &best, const UnitFilter &pred, Position center = Positions::None, int radius = 999999) const override;
       virtual Error     getLastError() const override;
       virtual bool      setLastError(BWAPI::Error e = Errors::None) const override;

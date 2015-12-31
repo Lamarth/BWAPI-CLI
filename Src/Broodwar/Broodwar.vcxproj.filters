@@ -98,6 +98,9 @@
     <ClCompile Include="BWAPI\TilePosition.cpp">
       <Filter>Source code files\BWAPI</Filter>
     </ClCompile>
+    <ClCompile Include="Filter.cpp">
+      <Filter>Source code files\BWAPI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BWAPI\Tech.h">

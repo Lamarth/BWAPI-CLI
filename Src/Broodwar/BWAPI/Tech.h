@@ -8,6 +8,7 @@
 #pragma managed
 
 #include "Race.h"
+#include "Price.h"
 #include "IIdentifiedObject.h"
 #include "Enum\OrderType.h"
 #include "Enum\TechType.h"
@@ -48,21 +49,11 @@ namespace BroodWar
 			/// </summary>
 			property Api::Race^ Race { Api::Race^ get(); }
 
-			/// <summary>
-			/// Returns the mineral cost of the tech type
-			/// </summary>
-			property int MineralPrice { int get(); }
-			
-			/// <summary>
-			/// Returns the vespene gas price of the tech type
-			/// </summary>
-			property int GasPrice { int get(); }
-			
-			/// <summary>
-			/// Returns the number of frames needed to research the tech type
-			/// </summary>
-			property int ResearchTime { int get(); }
-			
+            /// <summary>
+            /// Tech price
+            /// </summary>
+            property Api::Price^ Price { Api::Price^ get(); }
+
 			/// <summary>
 			/// Returns the amount of energy used each time this tech type is used
 			/// </summary>

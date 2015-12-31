@@ -129,6 +129,6 @@ namespace BWAPI
     /// of \p pred.
     ///
     /// @see UnitFilter
-    Unitset getUnits(const UnitFilter &pred = Filter::IsTransport) const;
+    Unitset getUnits(const UnitFilter &pred = Filter::Null) const;
   };
 };

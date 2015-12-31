@@ -147,6 +147,7 @@
     <ClCompile Include="BWAPI\Upgrade.cpp" />
     <ClCompile Include="BWAPI\Weapon.cpp" />
     <ClCompile Include="EnumMapping.cpp" />
+    <ClCompile Include="Filter.cpp" />
     <ClCompile Include="TournamentBase.cpp" />
     <ClCompile Include="Util.cpp" />
   </ItemGroup>

@@ -125,6 +125,14 @@ namespace BroodWar
         {
             return ConvertPosition(*(first->instance) - *(second->instance));
         }
+        Position^ Position::operator * (Position^ first, int second)
+        {
+            return ConvertPosition(*(first->instance) * second);
+        }
+        Position^ Position::operator / (Position^ first, int second)
+        {
+            return ConvertPosition(*(first->instance) / second);
+        }
         Position^ Position::operator += (Position^ first, Position^ second)
         {
             *(first->instance) += *(second->instance);
@@ -133,6 +141,16 @@ namespace BroodWar
         Position^ Position::operator -= (Position^ first, Position^ second)
         {
             *(first->instance) -= *(second->instance);
+            return first;
+        }
+        Position^ Position::operator *= (Position^ first, int second)
+        {
+            *(first->instance) *= second;
+            return first;
+        }
+        Position^ Position::operator /= (Position^ first, int second)
+        {
+            *(first->instance) /= second;
             return first;
         }
 

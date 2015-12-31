@@ -70,10 +70,10 @@ namespace BWAPI
     void setClientInfo(int clientInfo = 0, int index = 0) const;
 
     /// @copydoc UnitInterface::getUnitsInRadius
-    Unitset getUnitsInRadius(int radius, const UnitFilter &pred = Filter::IsTransport) const;
+    Unitset getUnitsInRadius(int radius, const UnitFilter &pred = Filter::Null) const;
 
     /// @copydoc UnitInterface::getClosestUnit
-    Unit getClosestUnit(const UnitFilter &pred = Filter::IsTransport, int radius = 999999) const;
+    Unit getClosestUnit(const UnitFilter &pred = Filter::Null, int radius = 999999) const;
 
     /// @name Unit Commands
     /// @{

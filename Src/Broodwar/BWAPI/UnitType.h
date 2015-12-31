@@ -6,6 +6,7 @@
 
 #include "Race.h"
 #include "Price.h"
+#include "TilePosition.h"
 #include "IIdentifiedObject.h"
 #include "Enum\UnitType.h"
 #include "Enum\UnitSizeType.h"
@@ -154,16 +155,21 @@ namespace BroodWar
 			property Api::Enum::UnitSizeType Size { Api::Enum::UnitSizeType get(); }
 			
 			/// <summary>
-			/// Returns the tile width of the unit. Useful for determining the size of buildings. For example UnitTypes::Terran_Supply_Depot.tileWidth() will return 3
+			/// Returns the tile width of the unit. Useful for determining the size of buildings. For example UnitTypes::Terran_Supply_Depot.TileWidth will return 3
 			/// </summary>
 			property int TileWidth { int get(); }
 			
 			/// <summary>
-			/// Returns the tile height of the unit. Useful for determining the size of buildings. For example UnitTypes::Terran_Supply_Depot.tileHeight() will return 2
+			/// Returns the tile height of the unit. Useful for determining the size of buildings. For example UnitTypes::Terran_Supply_Depot.TileHeight will return 2
 			/// </summary>
 			property int TileHeight { int get(); }
 			
-			/// <summary>
+            /// <summary>
+            /// Returns the tile size of the unit as a TilePosition. Useful for determining the size of buildings. For example UnitTypes::Terran_Supply_Depot.TileSize will return X=3,Y=2
+            /// </summary>
+            property Api::TilePosition^ TileSize { Api::TilePosition^ get(); }
+
+            /// <summary>
 			/// Distance from the center of the unit to the left edge of the unit, measured in pixels
 			/// </summary>
 			property int DimensionLeft { int get(); }
@@ -386,7 +392,12 @@ namespace BroodWar
 			/// Returns true if the unit is a spell unit
 			/// </summary>
 			property bool IsSpell { bool get(); }
-			
+
+            /// <summary>
+            /// Returns true if this unit type spreads creep
+            /// </summary>
+            property bool ProducesCreep { bool get(); }
+
 			/// <summary>
 			/// Returns true if the unit produces larva
 			/// </summary>
@@ -402,12 +413,32 @@ namespace BroodWar
 			/// </summary>
 			property bool CanBuildAddon { bool get(); }
 
+            /// <summary>
+            /// Returns the set of unit types this unit is capable of creating
+            /// </summary>
+            property HashSet<UnitType^>^ BuildsWhat { HashSet<UnitType^>^ get(); }
+
+            /// <summary>
+            /// Returns the set of technologies that this unit is capable of researching
+            /// </summary>
+            property HashSet<Tech^>^ ResearchesWhat { HashSet<Tech^>^ get(); }
+
+            /// <summary>
+            /// Returns the set of upgrades that this unit type is capable of upgrading
+            /// </summary>
+            property HashSet<Upgrade^>^ UpgradesWhat { HashSet<Upgrade^>^ get(); }
+
 			virtual int GetHashCode() override;
 			virtual bool Equals(Object^ o) override;
 			bool Equals(UnitType^ other);
 
 			static property List<UnitType^>^ AllUnitTypes { List<UnitType^>^ get(); }
 			static property List<UnitType^>^ AllMacroTypes { List<UnitType^>^ get(); }
+            
+            /// <summary>
+            /// Gets the matching unit type object that already exists
+            /// </summary>
+            static UnitType^ Get(Enum::UnitType type);
 
 			static bool operator == (UnitType^ first, UnitType^ second);
 			static bool operator != (UnitType^ first, UnitType^ second);

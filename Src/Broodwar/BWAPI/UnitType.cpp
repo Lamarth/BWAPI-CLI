@@ -191,7 +191,12 @@ namespace BroodWar
 		{
 			return instance->tileHeight();
 		}
-			
+
+        TilePosition^ UnitType::TileSize::get()
+        {
+            return ConvertTilePosition(instance->tileSize());
+        }
+
 		int UnitType::DimensionLeft::get()
 		{
 			return instance->dimensionLeft();
@@ -416,7 +421,12 @@ namespace BroodWar
 		{
 			return instance->isSpell();
 		}
-			
+
+        bool UnitType::ProducesCreep::get()
+        {
+            return instance->producesCreep();
+        }
+
 		bool UnitType::ProducesLarva::get()
 		{
 			return instance->producesLarva();
@@ -431,6 +441,21 @@ namespace BroodWar
 		{
 			return instance->canBuildAddon();
 		}
+
+        HashSet<Api::UnitType^>^ UnitType::BuildsWhat::get()
+        {
+            return ToHashSet<BWAPI::UnitType, UnitType^>(instance->buildsWhat(), &ConvertUnitType);
+        }
+
+        HashSet<Api::Tech^>^ UnitType::ResearchesWhat::get()
+        {
+            return ToHashSet<BWAPI::TechType, Tech^>(instance->researchesWhat(), &ConvertTech);
+        }
+
+        HashSet<Api::Upgrade^>^ UnitType::UpgradesWhat::get()
+        {
+            return ToHashSet<BWAPI::UpgradeType, Upgrade^>(instance->upgradesWhat(), &ConvertUpgrade);
+        }
 
 		int UnitType::GetHashCode()
 		{
@@ -461,6 +486,11 @@ namespace BroodWar
 		{
 			return ToList<BWAPI::UnitType, UnitType^>(BWAPI::UnitTypes::allMacroTypes(), &ConvertUnitType);
 		}
+
+        UnitType^ UnitType::Get(Enum::UnitType type)
+        {
+            return ConvertUnitType(ConvertUnitType(type));
+        }
 
 		bool UnitType::operator == (UnitType^ first, UnitType^ second)
 		{

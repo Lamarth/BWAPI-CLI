@@ -51,8 +51,12 @@ namespace BroodWar
 			static bool operator < (Position^ first, Position^ second);
 			static Position^ operator + (Position^ first, Position^ second);
 			static Position^ operator - (Position^ first, Position^ second);
-			static Position^ operator += (Position^ first, Position^ second);
+            static Position^ operator * (Position^ first, int second);
+            static Position^ operator / (Position^ first, int second);
+            static Position^ operator += (Position^ first, Position^ second);
 			static Position^ operator -= (Position^ first, Position^ second);
+            static Position^ operator *= (Position^ first, int second);
+            static Position^ operator /= (Position^ first, int second);
 
             static Position^ Rescale(TilePosition^ position);
         };

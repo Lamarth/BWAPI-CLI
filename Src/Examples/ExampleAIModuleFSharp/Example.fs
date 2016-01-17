@@ -175,17 +175,15 @@ type ExampleAiModuleFSharp() =
         Game.Bullets |> Seq.iter drawBullet
 
     member ai.DrawVisibilityData () =
-        let colorOf pos =
-            if Game.IsExplored(pos) then
-                if Game.IsVisible(pos) then Color.Green else Color.Blue
+        let colorOf x y =
+            if Game.IsExplored(x, y) then
+                if Game.IsVisible(x, y) then Color.Green else Color.Blue
             else
                 Color.Red
 
-        let tileMid = new Position(16, 16)
         for x = 0 to Game.MapWidth do
             for y = 0 to Game.MapWidth do
-                let pos = new TilePosition(x, y)
-                Game.DrawDot(Position.Rescale(pos) + tileMid, colorOf pos);
+                Game.DrawDotMap(x * 32 + 16, y * 32 + 16, colorOf x y);
 
     member ai.ShowPlayers () =
         let showPlayer (player:Player) = Game.Write("Player [{0}]: {1} is in force: {2}", player.Id, player.Name, player.Force.Name)

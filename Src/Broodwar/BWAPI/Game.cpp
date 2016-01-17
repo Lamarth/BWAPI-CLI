@@ -218,7 +218,12 @@ namespace BroodWar
         {
             return ToHashSet<BWAPI::Unit, Unit^>(instance->getUnitsInRectangle(*(topLeft->instance), *(bottomRight->instance)), &ConvertUnit);
         }
-            
+
+        HashSet<Api::Unit^>^ Game::GetUnitsInRadius(int x, int y, int radius)
+        {
+            return ToHashSet<BWAPI::Unit, Unit^>(instance->getUnitsInRadius(x, y, radius), &ConvertUnit);
+        }
+
         HashSet<Api::Unit^>^ Game::GetUnitsInRadius(Api::Position^ center, int radius)
         {
             return ToHashSet<BWAPI::Unit, Unit^>(instance->getUnitsInRadius(*(center->instance), radius), &ConvertUnit);

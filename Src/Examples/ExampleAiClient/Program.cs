@@ -264,19 +264,19 @@ namespace ExampleAiClient
 
 		private static void DrawVisibilityData()
 		{
-            Position tileMid = new Position(16, 16);
-            for (var x = 0; x < Game.MapWidth; x++)
-            {
-                for (var y = 0; y < Game.MapHeight; y++)
-                {
-                    TilePosition pos = new TilePosition(x, y);
-                    if (Game.IsExplored(pos))
-                        Game.DrawDot(Position.Rescale(pos) + tileMid, Game.IsVisible(pos) ? Color.Green : Color.Blue);
-                    else
-                        Game.DrawDot(Position.Rescale(pos) + tileMid, Color.Red);
-                }
-            }
-        }
+			for (var x = 0; x < Game.MapWidth; x++)
+			{
+				for (var y = 0; y < Game.MapHeight; y++)
+				{
+					if (Game.IsExplored(x, y))
+					{
+						Game.DrawDotMap(x * 32 + 16, y * 32 + 16, Game.IsVisible(x, y) ? Color.Green : Color.Blue);
+					}
+					else
+						Game.DrawDotMap(x * 32 + 16, y * 32 + 16, Color.Red);
+				}
+			}
+		}
 
 /*		private static void DrawTerrainData()
 		{

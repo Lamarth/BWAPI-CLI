@@ -237,7 +237,12 @@ namespace BroodWar
             /// Returns the set of accessible units that are in or overlapping the given rectangle
             /// </summary>
             static HashSet<Unit^>^ GetUnitsInRectangle(Position^ topLeft, Position^ bottomRight);
-            
+
+            /// <summary>
+            /// Returns the set of accessible units within or overlapping a circle at the given point with the given radius
+            /// </summary>
+            static HashSet<Unit^>^ GetUnitsInRadius(int x, int y, int radius);
+
             /// <summary>
             /// Returns the set of accessible units within or overlapping a circle at the given point with the given radius
             /// </summary>

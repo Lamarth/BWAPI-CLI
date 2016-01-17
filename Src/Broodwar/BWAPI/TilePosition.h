@@ -14,6 +14,7 @@ namespace BroodWar
     namespace Api
 	{
         ref class Position;
+        ref class WalkPosition;
 
         public ref class TilePosition
         {
@@ -59,6 +60,7 @@ namespace BroodWar
             static TilePosition^ operator /= (TilePosition^ first, int second);
 
             static TilePosition^ Rescale(Position^ position);
+            static TilePosition^ Rescale(WalkPosition^ position);
         };
 
         BWAPI::TilePosition ConvertTilePosition(TilePosition^ position);

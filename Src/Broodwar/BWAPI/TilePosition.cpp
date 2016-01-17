@@ -6,6 +6,7 @@
 
 #include "Position.h"
 #include "TilePosition.h"
+#include "WalkPosition.h"
 
 namespace BroodWar
 {
@@ -155,6 +156,11 @@ namespace BroodWar
         }
 
         TilePosition^ TilePosition::Rescale(Position^ position)
+        {
+            return gcnew TilePosition(new BWAPI::TilePosition(*(position->instance)), true);
+        }
+
+        TilePosition^ TilePosition::Rescale(WalkPosition^ position)
         {
             return gcnew TilePosition(new BWAPI::TilePosition(*(position->instance)), true);
         }

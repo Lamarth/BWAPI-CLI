@@ -145,6 +145,7 @@
     <ClCompile Include="BWAPI\UnitCommand.cpp" />
     <ClCompile Include="BWAPI\UnitType.cpp" />
     <ClCompile Include="BWAPI\Upgrade.cpp" />
+    <ClCompile Include="BWAPI\WalkPosition.cpp" />
     <ClCompile Include="BWAPI\Weapon.cpp" />
     <ClCompile Include="EnumMapping.cpp" />
     <ClCompile Include="Filter.cpp" />
@@ -195,6 +196,7 @@
     <ClInclude Include="BWAPI\UnitCommand.h" />
     <ClInclude Include="BWAPI\UnitType.h" />
     <ClInclude Include="BWAPI\Upgrade.h" />
+    <ClInclude Include="BWAPI\WalkPosition.h" />
     <ClInclude Include="BWAPI\Weapon.h" />
     <ClInclude Include="EnumClassMap.h" />
     <ClInclude Include="EnumMapping.h" />

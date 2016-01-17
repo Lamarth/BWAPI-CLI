@@ -79,9 +79,9 @@ namespace ExampleTournamentModule
 			else
 				color = 6;
 
-			Game.SetTextSize(3);
+            //Game.SetTextSize(3);
 			Game.DrawTextScreen(4, 4, "\x13\x07{0}", Events.BotName);
-			Game.SetTextSize(0);
+            //Game.SetTextSize(0);
 
 			Game.DrawTextScreen(2, 2, "\x04{0}\n\x07APM: {1}{2}\n\x07Highest APM: {3}{4}", Game.MapName, color, thisApm, hcolor, _maxApm);
 			// draw supplies

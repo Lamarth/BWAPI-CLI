@@ -778,7 +778,7 @@ namespace BWAPI
     /// @endcode
     ///
     /// @see getClosestUnit, getUnitsInWeaponRange, Game::getUnitsInRadius, Game::getUnitsInRectangle
-    Unitset getUnitsInRadius(int radius, const UnitFilter &pred = Filter::Null) const;
+    Unitset getUnitsInRadius(int radius, const UnitFilter &pred = __nullptr) const;
 
     /// <summary>Obtains the set of units within weapon range of this unit.</summary>
     ///
@@ -790,7 +790,7 @@ namespace BWAPI
     /// </param>
     ///
     /// @see getUnitsInRadius, getClosestUnit, Game::getUnitsInRadius, Game::getUnitsInRectangle
-    Unitset getUnitsInWeaponRange(WeaponType weapon, const UnitFilter &pred = Filter::Null) const;
+    Unitset getUnitsInWeaponRange(WeaponType weapon, const UnitFilter &pred = __nullptr) const;
 
     /// <summary>Retrieves the closest unit to this one.</summary>
     /// 
@@ -804,7 +804,7 @@ namespace BWAPI
     /// </param>
     ///
     /// @see getUnitsInRadius, Game::getUnitsInRadius, Game::getUnitsInRectangle
-    Unit getClosestUnit(const UnitFilter &pred = Filter::Null, int radius = 999999) const;
+    Unit getClosestUnit(const UnitFilter &pred = __nullptr, int radius = 999999) const;
 
     /// <summary>Checks if the current unit is housing a @Nuke.</summary> This is only available
     /// for @Silos.

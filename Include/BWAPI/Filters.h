@@ -25,9 +25,6 @@ namespace BWAPI
 
   namespace Filter
   {
-    // A manual addition to make things compile using Filter::Null instead of nullptr
-    extern const PtrUnitFilter Null;
-
     /// <summary>A unary filter that checks if the unit type is a transport.</summary>
     extern const PtrUnitFilter IsTransport;
 

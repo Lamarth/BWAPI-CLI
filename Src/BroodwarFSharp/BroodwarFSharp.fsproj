@@ -46,6 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Position.fs" />
+    <Compile Include="UnitType.fs" />
+    <Compile Include="Unit.fs" />
     <Compile Include="Game.fs" />
   </ItemGroup>
   <ItemGroup>

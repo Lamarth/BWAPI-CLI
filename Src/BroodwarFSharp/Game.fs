@@ -9,6 +9,8 @@ type Game() =
     let mutable _AllUnits = [||]
     let mutable _OwnUnits = [||]
     let mutable _EnemyUnits = [||]
+    let mutable _SeenUnits = [||]
+    let mutable _SeenEnemyUnits = [||]
 
     let renewUnits () =
         if _UnitsFrame <> Gm.FrameCount then
@@ -16,6 +18,8 @@ type Game() =
             _AllUnits <- Gm.AllUnits |> Seq.map Unit.convert |> Array.ofSeq
             _OwnUnits <- _AllUnits |> Array.filter (fun unit -> unit.Player = Gm.Self)
             _EnemyUnits <- _AllUnits |> Array.filter (fun unit -> Gm.Self.IsEnemy(unit.Player))
+            _SeenUnits <- Unit.seenUnits
+            _SeenEnemyUnits <- _SeenUnits |> Array.filter (fun unit -> Gm.Self.IsEnemy(unit.LastKnownPlayer))
 
     let mutable _MineralsFrame = -1
     let mutable _Minerals = [||]
@@ -81,6 +85,16 @@ type Game() =
     member game.EnemyUnits =
         renewUnits ()
         _EnemyUnits
+
+    /// Returns all units that have been seen and may still exist
+    member game.SeenUnits =
+        renewUnits ()
+        _SeenUnits
+    
+    /// Returns all enemy units that have been seen and may still exist
+    member game.SeenEnemyUnits =
+        renewUnits ()
+        _SeenEnemyUnits
     
     /// Returns the set of all accessible mineral patches
     member game.Minerals =

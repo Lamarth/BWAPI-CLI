@@ -8,15 +8,21 @@ type Ut = BroodWar.Api.Unit
 [<Sealed>]
 type Unit(ut:Ut) =
     // Cache the position of the unit - it may be used extensively
-    let mutable _PositionFrame = -1
-    let mutable _Position = Position.unknownPixel
-    let mutable _LastKnownPosition = Position.unknownPixel
-    let renewPosition () =
-        if _PositionFrame <> Gm.FrameCount then
-            _PositionFrame <- Gm.FrameCount
+    let mutable _Frame = Gm.FrameCount
+    let mutable _Position = Position.apiToPixel ut.Position
+    let mutable _LastKnownFrame = _Frame
+    let mutable _LastKnownPosition = _Position
+    let mutable _LastKnownUnitType = ut.UnitType
+    let mutable _LastKnownPlayer = ut.Player
+    let renewUnit () =
+        if _Frame <> Gm.FrameCount then
+            _Frame <- Gm.FrameCount
             _Position <- Position.apiToPixel ut.Position
             if _Position <> Position.unknownPixel then
+                _LastKnownFrame <- _Frame
                 _LastKnownPosition <- _Position
+                _LastKnownUnitType <- ut.UnitType
+                _LastKnownPlayer <- ut.Player
         
     static let unitTable = new System.Collections.Generic.Dictionary<int, Unit>()
     static member NewGame() = unitTable.Clear()
@@ -34,6 +40,9 @@ type Unit(ut:Ut) =
     static member tryConvert (ut:Ut) =
         if ut = null then None
         else Some (Unit.convert ut)
+    static member seenUnits = unitTable.Values |> Array.ofSeq
+
+    static member notifyUnitDestroyed (ut:Ut) = unitTable.Remove ut.Id |> ignore
 
     static member (|~|) (unit1:Unit, unit2:Unit) = unit1.Position |~| unit2.Position
 
@@ -63,15 +72,36 @@ type Unit(ut:Ut) =
     /// Returns the position of the unit on the map
     /// </summary>
     member unit.Position =
-        renewPosition ()
+        renewUnit ()
         _Position
 
     /// <summary>
     /// Returns the last known position of the unit on the map, if any
     /// </summary>
     member unit.LastKnownPosition =
-        renewPosition ()
+        renewUnit ()
         _LastKnownPosition
+
+    /// <summary>
+    /// Returns the last known frame for a unit
+    /// </summary>
+    member unit.LastKnownFrame =
+        renewUnit ()
+        _LastKnownFrame
+
+    /// <summary>
+    /// Returns the last known type for a unit
+    /// </summary>
+    member unit.LastKnownUnitType =
+        renewUnit ()
+        _LastKnownUnitType
+
+    /// <summary>
+    /// Returns the last known player for a unit
+    /// </summary>
+    member unit.LastKnownPlayer =
+        renewUnit ()
+        _LastKnownPlayer
 
     /// <summary>
     /// Returns the build tile position of the unit on the map. Useful if the unit is a building. The tile position is of the top left corner of the building

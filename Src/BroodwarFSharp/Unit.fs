@@ -10,22 +10,13 @@ type Unit(ut:Ut) =
     // Cache the position of the unit - it may be used extensively
     let mutable _Frame = Gm.FrameCount
     let mutable _Position = Position.apiToPixel ut.Position
-    let mutable _LastKnownFrame = _Frame
-    let mutable _LastKnownPosition = _Position
-    let mutable _LastKnownUnitType = ut.UnitType
-    let mutable _LastKnownPlayer = ut.Player
-    let renewUnit () =
-        if _Frame <> Gm.FrameCount then
-            _Frame <- Gm.FrameCount
-            _Position <- Position.apiToPixel ut.Position
-            if _Position <> Position.unknownPixel then
-                _LastKnownFrame <- _Frame
-                _LastKnownPosition <- _Position
-                _LastKnownUnitType <- ut.UnitType
-                _LastKnownPlayer <- ut.Player
+    let mutable _LastMark = { UnitId = ut.Id; Frame = _Frame; Position = _Position; UnitType = ut.UnitType; Player = ut.Player }
         
     static let unitTable = new System.Collections.Generic.Dictionary<int, Unit>()
-    static member NewGame() = unitTable.Clear()
+    static let destructionTable = new System.Collections.Generic.Dictionary<int, UnitMark>()
+    static member NewGame() =
+        unitTable.Clear()
+        destructionTable.Clear()
 
     /// <summary>
     /// Wraps a unit object
@@ -41,12 +32,24 @@ type Unit(ut:Ut) =
         if ut = null then None
         else Some (Unit.convert ut)
     static member seenUnits = unitTable.Values |> Array.ofSeq
+    static member destroyedUnits = destructionTable.Values |> Array.ofSeq
 
-    static member notifyUnitDestroyed (ut:Ut) = unitTable.Remove ut.Id |> ignore
+    static member notifyUnitDestroyed (ut:Ut) =
+        match Unit.tryConvert ut with
+        | Some unit -> destructionTable.[ut.Id] <- unit.LastMark
+        | _ -> ()
+        unitTable.Remove ut.Id |> ignore
 
     static member (|~|) (unit1:Unit, unit2:Unit) = unit1.Position |~| unit2.Position
 
     member private unit.Unit = ut
+
+    member unit.RenewUnit () =
+        if _Frame <> Gm.FrameCount then
+            _Frame <- Gm.FrameCount
+            _Position <- Position.apiToPixel ut.Position
+            if _Position <> Position.unknownPixel then
+                _LastMark <- { UnitId = ut.Id; Frame = _Frame; Position = _Position; UnitType = ut.UnitType; Player = ut.Player }
 
     /// <summary>
     /// Returns a unique ID for this unit. It simply casts the unit's address in Broodwar as an integer, since each unit has a unique address
@@ -71,37 +74,12 @@ type Unit(ut:Ut) =
     /// <summary>
     /// Returns the position of the unit on the map
     /// </summary>
-    member unit.Position =
-        renewUnit ()
-        _Position
+    member unit.Position = _Position
 
     /// <summary>
-    /// Returns the last known position of the unit on the map, if any
+    /// Returns the last mark (observation) of the unit
     /// </summary>
-    member unit.LastKnownPosition =
-        renewUnit ()
-        _LastKnownPosition
-
-    /// <summary>
-    /// Returns the last known frame for a unit
-    /// </summary>
-    member unit.LastKnownFrame =
-        renewUnit ()
-        _LastKnownFrame
-
-    /// <summary>
-    /// Returns the last known type for a unit
-    /// </summary>
-    member unit.LastKnownUnitType =
-        renewUnit ()
-        _LastKnownUnitType
-
-    /// <summary>
-    /// Returns the last known player for a unit
-    /// </summary>
-    member unit.LastKnownPlayer =
-        renewUnit ()
-        _LastKnownPlayer
+    member unit.LastMark = _LastMark
 
     /// <summary>
     /// Returns the build tile position of the unit on the map. Useful if the unit is a building. The tile position is of the top left corner of the building
@@ -782,263 +760,334 @@ type Unit(ut:Ut) =
     member unit.IsVisible(player) = ut.IsVisible(player)
 
     /// <summary>
-    /// Returns true if the unit is able to execute the given command, or false if there is an error
+    /// Issues a command to the unit
     /// </summary>
-    member unit.CanIssueCommand(command) = ut.CanIssueCommand(command)
+    member unit.Obey command =
+        match command with
+        | AttackMove pos -> ut.Attack(Position.pixelToApi pos, false)
+        | Attack unit -> ut.Attack(unit.Unit, false)
+        | Build (unitType, tile) -> ut.Build(unitType.Type, Position.tileToApi tile)
+        | BuildAddon unitType -> ut.BuildAddon(unitType)
+        | Train unitType -> ut.Train(unitType.Type)
+        | Morph unitType -> ut.Morph(unitType.Type)
+        | Research tech -> ut.Research(tech)
+        | PerformUpgrade upgrade -> ut.PerformUpgrade(upgrade)
+        | SetRallyPoint pos -> ut.SetRallyPoint(Position.pixelToApi pos)
+        | SetRallyUnit unit -> ut.SetRallyPoint(unit.Unit)
+        | Move pos -> ut.Move(Position.pixelToApi pos, false)
+        | Patrol pos -> ut.Patrol(Position.pixelToApi pos, false)
+        | HoldPosition -> ut.HoldPosition(false)
+        | Stop -> ut.Stop(false)
+        | Follow unit -> ut.Follow(unit.Unit, false)
+        | Gather unit -> ut.Gather(unit.Unit, false)
+        | ReturnCargo -> ut.ReturnCargo(false)
+        | Repair unit -> ut.Repair(unit.Unit, false)
+        | Burrow -> ut.Burrow()
+        | Unburrow -> ut.Unburrow()
+        | Cloak -> ut.Cloak()
+        | Decloak -> ut.Decloak()
+        | Siege -> ut.Siege()
+        | Unsiege -> ut.Unsiege()
+        | Lift -> ut.Lift()
+        | Land pos -> ut.Land(Position.tileToApi pos)
+        | Load unit -> ut.Load(unit.Unit, false)
+        | Unload unit -> ut.Unload(unit.Unit)
+        | UnloadAll -> ut.UnloadAll(false)
+        | UnloadAllAt pos -> ut.UnloadAll(Position.pixelToApi pos, false)
+        | RightClickAt pos -> ut.RightClick(Position.pixelToApi pos, false)
+        | RightClickOn unit -> ut.RightClick(unit.Unit, false)
+        | HaltConstruction -> ut.HaltConstruction()
+        | CancelConstruction -> ut.CancelConstruction()
+        | CancelAddon -> ut.CancelAddon()
+        | CancelTrain slot -> ut.CancelTrain(slot)
+        | CancelMorph -> ut.CancelMorph()
+        | CancelResearch -> ut.CancelResearch()
+        | CancelUpgrade -> ut.CancelUpgrade()
+        | UseTech tech -> ut.UseTech(tech)
+        | UseTechAt (tech, pos) -> ut.UseTech(tech, Position.pixelToApi pos)
+        | UseTechOn (tech, unit) -> ut.UseTech(tech, unit.Unit)
+        | PlaceCop tile -> ut.PlaceCop(Position.tileToApi tile)
 
     /// <summary>
-    /// Issues the give unit command, or returns false if there is an error
+    /// Issues a queued command to the unit
     /// </summary>
-    member unit.IssueCommand(command) = ut.IssueCommand(command)
+    member unit.Queue command =
+        match command with
+        | AttackMove pos -> ut.Attack(Position.pixelToApi pos, true)
+        | Attack unit -> ut.Attack(unit.Unit, true)
+        | Move pos -> ut.Move(Position.pixelToApi pos, true)
+        | Patrol pos -> ut.Patrol(Position.pixelToApi pos, true)
+        | HoldPosition -> ut.HoldPosition(true)
+        | Stop -> ut.Stop(true)
+        | Follow unit -> ut.Follow(unit.Unit, true)
+        | Gather unit -> ut.Gather(unit.Unit, true)
+        | ReturnCargo -> ut.ReturnCargo(true)
+        | Repair unit -> ut.Repair(unit.Unit, true)
+        | Load unit -> ut.Load(unit.Unit, true)
+        | UnloadAll -> ut.UnloadAll(true)
+        | UnloadAllAt pos -> ut.UnloadAll(Position.pixelToApi pos, true)
+        | RightClickAt pos -> ut.RightClick(Position.pixelToApi pos, true)
+        | RightClickOn unit -> ut.RightClick(unit.Unit, true)
+        | _ -> raise (new System.InvalidOperationException (sprintf "Unable to queue command %A" command))
 
-    /// <summary>
-    /// Orders the unit to attack move to the specified location
-    /// </summary>
-    member unit.Attack(target, shiftQueueCommand) = ut.Attack(Position.pixelToApi target, shiftQueueCommand)
-
-    /// <summary>
-    /// Orders the unit to attack the specified unit
-    /// </summary>
-    member unit.Attack(target:Unit, shiftQueueCommand) = ut.Attack(target.Unit, shiftQueueCommand)
-
-    /// <summary>
-    /// Orders the unit to build the given unit type at the given position. Note that if the player does not have enough resources when the unit attempts
-    /// to place the building down, the order will fail. The tile position specifies where the top left corner of the building will be placed
-    /// </summary>
-    member unit.Build(unitType, target) = ut.Build(unitType, Position.tileToApi target)
-
-    /// <summary>
-    /// Orders the unit to build the given addon. The unit must be a Terran building that can have an addon and the specified unit type must be an addon unit type
-    /// </summary>
-    member unit.BuildAddon(unitType) = ut.BuildAddon(unitType)
-
-    /// <summary>
-    /// Orders this unit to add the specified unit type to the training queue. Note that the player must have sufficient resources to train. If you wish to make
-    /// units from a hatchery, use Larva to get the larva associated with the hatchery and then call morph on the larva you want to morph. This command can also
-    /// be used to make interceptors and scarabs
-    /// </summary>
-    member unit.Train(unitType) = ut.Train(unitType)
-
-    /// <summary>
-    /// Orders the unit to morph into the specified unit type. Returns false if given a wrong type.
-    /// \see Unit::cancelMorph, Unit::isMorphing
-    /// </summary>
-    member unit.Morph(unitType) = ut.Morph(unitType)
-
-    /// <summary>
-    /// Orders the unit to research the given tech type.
-    /// \see Unit::cancelResearch, Unit::Unit#isResearching, Unit::getRemainingResearchTime, Unit::getTech
-    /// </summary>
-    member unit.Research(tech) = ut.Research(tech)
-
-    /// <summary>
-    /// Orders the unit to upgrade the given upgrade type.
-    /// \see Unit::cancelUpgrade, Unit::Unit#isUpgrading, Unit::getRemainingUpgradeTime, Unit::getUpgrade
-    /// </summary>
-    member unit.PerformUpgrade(upgrade) = ut.PerformUpgrade(upgrade)
-
-    /// <summary>
-    /// Orders the unit to set its rally position to the specified position.
-    /// \see Unit::getRallyPosition, Unit::getRallyUnit
-    /// </summary>
-    member unit.SetRallyPoint(target) = ut.SetRallyPoint(Position.pixelToApi target)
-
-    /// <summary>
-    /// Orders the unit to set its rally unit to the specified unit.
-    /// \see Unit::setRallyPosition, Unit::getRallyPosition, Unit::getRallyUnit
-    /// </summary>
-    member unit.SetRallyPoint(target:Unit) = ut.SetRallyPoint(target.Unit)
-
-    /// <summary>
-    /// Orders the unit to move from its current position to the specified position.
-    /// \see Unit::isMoving. 
-    /// </summary>
-    member unit.Move(target, shiftQueueCommand) = ut.Move(Position.pixelToApi target, shiftQueueCommand)
-
-    /// <summary>
-    /// Orders the unit to patrol between its current position and the specified position.
-    /// \see Unit::isPatrolling. 
-    /// </summary>
-    member unit.Patrol(target, shiftQueueCommand) = ut.Patrol(Position.pixelToApi target, shiftQueueCommand)
-
-    /// <summary>
-    /// Orders the unit to hold its position
-    /// </summary>
-    member unit.HoldPosition(shiftQueueCommand) = ut.HoldPosition(shiftQueueCommand)
-
-    /// <summary>
-    /// Orders the unit to stop
-    /// </summary>
-    member unit.Stop(shiftQueueCommand) = ut.Stop(shiftQueueCommand)
-
-    /// <summary>
-    /// Orders the unit to follow the specified unit.
-    /// \see Unit::isFollowing
-    /// </summary>
-    member unit.Follow(target:Unit, shiftQueueCommand) = ut.Follow(target.Unit, shiftQueueCommand)
-
-    /// <summary>
-    /// Orders the unit to gather the specified unit (must be mineral or refinery type).
-    /// \see Unit::isGatheringGas, Unit::isGatheringMinerals
-    /// </summary>
-    member unit.Gather(target:Unit, shiftQueueCommand) = ut.Gather(target.Unit, shiftQueueCommand)
-
-    /// <summary>
-    /// Orders the unit to return its cargo to a nearby resource depot such as a Command Center. Only workers that are carrying minerals or gas
-    /// can be ordered to return cargo.
-    /// \see Unit::isCarryingGas, Unit::isCarryingMinerals
-    /// </summary>
-    member unit.ReturnCargo(shiftQueueCommand) = ut.ReturnCargo(shiftQueueCommand)
-
-    /// <summary>
-    /// Orders the unit to repair the specified unit. Only Terran SCVs can be ordered to repair, and the target must be a mechanical Terran unit or building.
-    /// \see Unit::isRepairing
-    /// </summary>
-    member unit.Repair(target:Unit, shiftQueueCommand) = ut.Repair(target.Unit, shiftQueueCommand)
-
-    /// <summary>
-    /// Orders the unit to burrow. Either the unit must be a Zerg Lurker, or the unit must be a Zerg ground unit and burrow tech must be researched.
-    /// \see: Unit::unburrow, Unit::isBurrowed
-    /// </summary>
-    member unit.Burrow() = ut.Burrow()
-
-    /// <summary>
-    /// Orders the burrowed unit to unburrow.
-    /// \see: Unit::burrow, Unit::isBurrowed.
-    /// </summary>
-    member unit.Unburrow() = ut.Unburrow()
-
-    /// <summary>
-    /// Orders the unit to cloak.
-    /// \see: Unit::decloak, Unit::isCloaked
-    /// </summary>
-    member unit.Cloak() = ut.Cloak()
-
-    /// <summary>
-    /// Orders the unit to decloak.
-    /// \see: Unit::cloak, Unit::isCloaked
-    /// </summary>
-    member unit.Decloak() = ut.Decloak()
-
-    /// <summary>
-    /// Orders the unit to siege. Note: unit must be a Terran siege tank.
-    /// \see Unit::unsiege, Unit::isSieged
-    /// </summary>
-    member unit.Siege() = ut.Siege()
-
-    /// <summary>
-    /// Orders the unit to unsiege. Note: unit must be a Terran siege tank.
-    /// \see: Unit::unsiege, Unit::isSieged
-    /// </summary>
-    member unit.Unsiege() = ut.Unsiege()
-
-    /// <summary>
-    /// Orders the unit to lift. Note: unit must be a Terran building that can be lifted.
-    /// \see Unit::land, Unit::isLifted. 
-    /// </summary>
-    member unit.Lift() = ut.Lift()
-
-    /// <summary>
-    /// Orders the unit to land. Note: unit must be a Terran building that is currently lifted.
-    /// \see Unit::lift, Unit::isLifted
-    /// </summary>
-    member unit.Land(target) = ut.Land(Position.tileToApi target)
-
-    /// <summary>
-    /// Orders the unit to load the target unit.
-    /// \see Unit::unload, Unit::unloadAll, Unit::getLoadedUnits, Unit:isLoaded
-    /// </summary>
-    member unit.Load(target:Unit, shiftQueueCommand) = ut.Load(target.Unit, shiftQueueCommand)
-
-    /// <summary>
-    /// Orders the unit to unload the target unit.
-    /// \see Unit::load, Unit::unloadAll, Unit::getLoadedUnits, Unit:isLoaded
-    /// </summary>
-    member unit.Unload(target:Unit) = ut.Unload(target.Unit)
-
-    /// <summary>
-    /// Orders the unit to unload all loaded units at the unit's current position.
-    /// \see Unit::load, Unit::unload, Unit::unloadAll, Unit::getLoadedUnits, Unit:isLoaded
-    /// </summary>
-    member unit.UnloadAll(shiftQueueCommand) = ut.UnloadAll(shiftQueueCommand)
-
-    /// <summary>
-    /// Orders the unit to unload all loaded units at the specified location. Unit should be a Terran Dropship, Protoss Shuttle, or Zerg Overlord. If the
-    /// unit is a Terran Bunker, the units will be unloaded right outside the bunker, like in the first version of unloadAll.
-    /// \see Unit::load, Unit::unload, Unit::unloadAll, Unit::getLoadedUnits, Unit:isLoaded
-    /// </summary>
-    member unit.UnloadAll(target, shiftQueueCommand) = ut.UnloadAll(Position.pixelToApi target, shiftQueueCommand)
-
-    /// <summary>
-    /// Works like the right click in the GUI
-    /// </summary>
-    member unit.RightClick(target, shiftQueueCommand) = ut.RightClick(Position.pixelToApi target, shiftQueueCommand)
-
-    /// <summary>
-    /// Works like the right click in the GUI. Right click on a mineral patch to order a worker to mine, right click on an enemy to attack it
-    /// </summary>
-    member unit.RightClick(target:Unit, shiftQueueCommand) = ut.RightClick(target.Unit, shiftQueueCommand)
-
-    /// <summary>
-    /// Orders the SCV to stop constructing the building, and the building is left in a partially complete state until it is canceled, destroyed, or completed.
-    /// \see Unit::isConstructing
-    /// </summary>
-    member unit.HaltConstruction() = ut.HaltConstruction()
-
-    /// <summary>
-    /// Orders the building to stop being constructed.
-    /// \see Unit::beingConstructed
-    /// </summary>
-    member unit.CancelConstruction() = ut.CancelConstruction()
-
-    /// <summary>
-    /// Orders the unit to stop making the addon
-    /// </summary>
-    member unit.CancelAddon() = ut.CancelAddon()
-
-    /// <summary>
-    /// Orders the unit to remove the specified unit from its training queue.
-    /// \see Unit::train, Unit::cancelTrain, Unit::isTraining, Unit::getTrainingQueue
-    /// </summary>
-    member unit.CancelTrain(slot) = ut.CancelTrain(slot)
-
-    /// <summary>
-    /// Orders the unit to stop morphing.
-    /// \see Unit::morph, Unit::isMorphing
-    /// </summary>
-    member unit.CancelMorph() = ut.CancelMorph()
-
-    /// <summary>
-    /// Orders the unit to cancel a research in progress.
-    /// \see Unit::research, Unit::isResearching, Unit::getTech
-    /// </summary>
-    member unit.CancelResearch() = ut.CancelResearch()
-
-    /// <summary>
-    /// Orders the unit to cancel an upgrade in progress.
-    /// \see Unit::upgrade, Unit::isUpgrading, Unit::getUpgrade
-    /// </summary>
-    member unit.CancelUpgrade() = ut.CancelUpgrade()
-
-    /// <summary>
-    /// Orders the unit to use a tech not requiring a target (ie Stim Pack). Returns true if it is a valid tech
-    /// </summary>
-    member unit.UseTech(tech) = ut.UseTech(tech)
-
-    /// <summary>
-    /// Orders the unit to use a tech requiring a position target (ie Dark Swarm). Returns true if it is a valid tech
-    /// </summary>
-    member unit.UseTech(tech, pos) = ut.UseTech(tech, Position.pixelToApi pos)
-
-    /// <summary>
-    /// Orders the unit to use a tech requiring a unit target (ie Irradiate). Returns true if it is a valid tech
-    /// </summary>
-    member unit.UseTech(tech, target:Unit) = ut.UseTech(tech, target.Unit)
-
-    /// <summary>
-    /// Moves a Flag Beacon to the target location
-    /// </summary>
-    member unit.PlaceCop(target) = ut.PlaceCop(Position.tileToApi target)
+//    /// <summary>
+//    /// Returns true if the unit is able to execute the given command, or false if there is an error
+//    /// </summary>
+//    member unit.CanIssueCommand(command) = ut.CanIssueCommand(command)
+//
+//    /// <summary>
+//    /// Issues the give unit command, or returns false if there is an error
+//    /// </summary>
+//    member unit.IssueCommand(command) = ut.IssueCommand(command)
+//
+//    /// <summary>
+//    /// Orders the unit to attack move to the specified location
+//    /// </summary>
+//    member unit.Attack(target, shiftQueueCommand) = ut.Attack(Position.pixelToApi target, shiftQueueCommand)
+//
+//    /// <summary>
+//    /// Orders the unit to attack the specified unit
+//    /// </summary>
+//    member unit.Attack(target:Unit, shiftQueueCommand) = ut.Attack(target.Unit, shiftQueueCommand)
+//
+//    /// <summary>
+//    /// Orders the unit to build the given unit type at the given position. Note that if the player does not have enough resources when the unit attempts
+//    /// to place the building down, the order will fail. The tile position specifies where the top left corner of the building will be placed
+//    /// </summary>
+//    member unit.Build(unitType, target) = ut.Build(unitType, Position.tileToApi target)
+//
+//    /// <summary>
+//    /// Orders the unit to build the given addon. The unit must be a Terran building that can have an addon and the specified unit type must be an addon unit type
+//    /// </summary>
+//    member unit.BuildAddon(unitType) = ut.BuildAddon(unitType)
+//
+//    /// <summary>
+//    /// Orders this unit to add the specified unit type to the training queue. Note that the player must have sufficient resources to train. If you wish to make
+//    /// units from a hatchery, use Larva to get the larva associated with the hatchery and then call morph on the larva you want to morph. This command can also
+//    /// be used to make interceptors and scarabs
+//    /// </summary>
+//    member unit.Train(unitType) = ut.Train(unitType)
+//
+//    /// <summary>
+//    /// Orders the unit to morph into the specified unit type. Returns false if given a wrong type.
+//    /// \see Unit::cancelMorph, Unit::isMorphing
+//    /// </summary>
+//    member unit.Morph(unitType) = ut.Morph(unitType)
+//
+//    /// <summary>
+//    /// Orders the unit to research the given tech type.
+//    /// \see Unit::cancelResearch, Unit::Unit#isResearching, Unit::getRemainingResearchTime, Unit::getTech
+//    /// </summary>
+//    member unit.Research(tech) = ut.Research(tech)
+//
+//    /// <summary>
+//    /// Orders the unit to upgrade the given upgrade type.
+//    /// \see Unit::cancelUpgrade, Unit::Unit#isUpgrading, Unit::getRemainingUpgradeTime, Unit::getUpgrade
+//    /// </summary>
+//    member unit.PerformUpgrade(upgrade) = ut.PerformUpgrade(upgrade)
+//
+//    /// <summary>
+//    /// Orders the unit to set its rally position to the specified position.
+//    /// \see Unit::getRallyPosition, Unit::getRallyUnit
+//    /// </summary>
+//    member unit.SetRallyPoint(target) = ut.SetRallyPoint(Position.pixelToApi target)
+//
+//    /// <summary>
+//    /// Orders the unit to set its rally unit to the specified unit.
+//    /// \see Unit::setRallyPosition, Unit::getRallyPosition, Unit::getRallyUnit
+//    /// </summary>
+//    member unit.SetRallyPoint(target:Unit) = ut.SetRallyPoint(target.Unit)
+//
+//    /// <summary>
+//    /// Orders the unit to move from its current position to the specified position.
+//    /// \see Unit::isMoving. 
+//    /// </summary>
+//    member unit.Move(target, shiftQueueCommand) = ut.Move(Position.pixelToApi target, shiftQueueCommand)
+//
+//    /// <summary>
+//    /// Orders the unit to patrol between its current position and the specified position.
+//    /// \see Unit::isPatrolling. 
+//    /// </summary>
+//    member unit.Patrol(target, shiftQueueCommand) = ut.Patrol(Position.pixelToApi target, shiftQueueCommand)
+//
+//    /// <summary>
+//    /// Orders the unit to hold its position
+//    /// </summary>
+//    member unit.HoldPosition(shiftQueueCommand) = ut.HoldPosition(shiftQueueCommand)
+//
+//    /// <summary>
+//    /// Orders the unit to stop
+//    /// </summary>
+//    member unit.Stop(shiftQueueCommand) = ut.Stop(shiftQueueCommand)
+//
+//    /// <summary>
+//    /// Orders the unit to follow the specified unit.
+//    /// \see Unit::isFollowing
+//    /// </summary>
+//    member unit.Follow(target:Unit, shiftQueueCommand) = ut.Follow(target.Unit, shiftQueueCommand)
+//
+//    /// <summary>
+//    /// Orders the unit to gather the specified unit (must be mineral or refinery type).
+//    /// \see Unit::isGatheringGas, Unit::isGatheringMinerals
+//    /// </summary>
+//    member unit.Gather(target:Unit, shiftQueueCommand) = ut.Gather(target.Unit, shiftQueueCommand)
+//
+//    /// <summary>
+//    /// Orders the unit to return its cargo to a nearby resource depot such as a Command Center. Only workers that are carrying minerals or gas
+//    /// can be ordered to return cargo.
+//    /// \see Unit::isCarryingGas, Unit::isCarryingMinerals
+//    /// </summary>
+//    member unit.ReturnCargo(shiftQueueCommand) = ut.ReturnCargo(shiftQueueCommand)
+//
+//    /// <summary>
+//    /// Orders the unit to repair the specified unit. Only Terran SCVs can be ordered to repair, and the target must be a mechanical Terran unit or building.
+//    /// \see Unit::isRepairing
+//    /// </summary>
+//    member unit.Repair(target:Unit, shiftQueueCommand) = ut.Repair(target.Unit, shiftQueueCommand)
+//
+//    /// <summary>
+//    /// Orders the unit to burrow. Either the unit must be a Zerg Lurker, or the unit must be a Zerg ground unit and burrow tech must be researched.
+//    /// \see: Unit::unburrow, Unit::isBurrowed
+//    /// </summary>
+//    member unit.Burrow() = ut.Burrow()
+//
+//    /// <summary>
+//    /// Orders the burrowed unit to unburrow.
+//    /// \see: Unit::burrow, Unit::isBurrowed.
+//    /// </summary>
+//    member unit.Unburrow() = ut.Unburrow()
+//
+//    /// <summary>
+//    /// Orders the unit to cloak.
+//    /// \see: Unit::decloak, Unit::isCloaked
+//    /// </summary>
+//    member unit.Cloak() = ut.Cloak()
+//
+//    /// <summary>
+//    /// Orders the unit to decloak.
+//    /// \see: Unit::cloak, Unit::isCloaked
+//    /// </summary>
+//    member unit.Decloak() = ut.Decloak()
+//
+//    /// <summary>
+//    /// Orders the unit to siege. Note: unit must be a Terran siege tank.
+//    /// \see Unit::unsiege, Unit::isSieged
+//    /// </summary>
+//    member unit.Siege() = ut.Siege()
+//
+//    /// <summary>
+//    /// Orders the unit to unsiege. Note: unit must be a Terran siege tank.
+//    /// \see: Unit::unsiege, Unit::isSieged
+//    /// </summary>
+//    member unit.Unsiege() = ut.Unsiege()
+//
+//    /// <summary>
+//    /// Orders the unit to lift. Note: unit must be a Terran building that can be lifted.
+//    /// \see Unit::land, Unit::isLifted. 
+//    /// </summary>
+//    member unit.Lift() = ut.Lift()
+//
+//    /// <summary>
+//    /// Orders the unit to land. Note: unit must be a Terran building that is currently lifted.
+//    /// \see Unit::lift, Unit::isLifted
+//    /// </summary>
+//    member unit.Land(target) = ut.Land(Position.tileToApi target)
+//
+//    /// <summary>
+//    /// Orders the unit to load the target unit.
+//    /// \see Unit::unload, Unit::unloadAll, Unit::getLoadedUnits, Unit:isLoaded
+//    /// </summary>
+//    member unit.Load(target:Unit, shiftQueueCommand) = ut.Load(target.Unit, shiftQueueCommand)
+//
+//    /// <summary>
+//    /// Orders the unit to unload the target unit.
+//    /// \see Unit::load, Unit::unloadAll, Unit::getLoadedUnits, Unit:isLoaded
+//    /// </summary>
+//    member unit.Unload(target:Unit) = ut.Unload(target.Unit)
+//
+//    /// <summary>
+//    /// Orders the unit to unload all loaded units at the unit's current position.
+//    /// \see Unit::load, Unit::unload, Unit::unloadAll, Unit::getLoadedUnits, Unit:isLoaded
+//    /// </summary>
+//    member unit.UnloadAll(shiftQueueCommand) = ut.UnloadAll(shiftQueueCommand)
+//
+//    /// <summary>
+//    /// Orders the unit to unload all loaded units at the specified location. Unit should be a Terran Dropship, Protoss Shuttle, or Zerg Overlord. If the
+//    /// unit is a Terran Bunker, the units will be unloaded right outside the bunker, like in the first version of unloadAll.
+//    /// \see Unit::load, Unit::unload, Unit::unloadAll, Unit::getLoadedUnits, Unit:isLoaded
+//    /// </summary>
+//    member unit.UnloadAll(target, shiftQueueCommand) = ut.UnloadAll(Position.pixelToApi target, shiftQueueCommand)
+//
+//    /// <summary>
+//    /// Works like the right click in the GUI
+//    /// </summary>
+//    member unit.RightClick(target, shiftQueueCommand) = ut.RightClick(Position.pixelToApi target, shiftQueueCommand)
+//
+//    /// <summary>
+//    /// Works like the right click in the GUI. Right click on a mineral patch to order a worker to mine, right click on an enemy to attack it
+//    /// </summary>
+//    member unit.RightClick(target:Unit, shiftQueueCommand) = ut.RightClick(target.Unit, shiftQueueCommand)
+//
+//    /// <summary>
+//    /// Orders the SCV to stop constructing the building, and the building is left in a partially complete state until it is canceled, destroyed, or completed.
+//    /// \see Unit::isConstructing
+//    /// </summary>
+//    member unit.HaltConstruction() = ut.HaltConstruction()
+//
+//    /// <summary>
+//    /// Orders the building to stop being constructed.
+//    /// \see Unit::beingConstructed
+//    /// </summary>
+//    member unit.CancelConstruction() = ut.CancelConstruction()
+//
+//    /// <summary>
+//    /// Orders the unit to stop making the addon
+//    /// </summary>
+//    member unit.CancelAddon() = ut.CancelAddon()
+//
+//    /// <summary>
+//    /// Orders the unit to remove the specified unit from its training queue.
+//    /// \see Unit::train, Unit::cancelTrain, Unit::isTraining, Unit::getTrainingQueue
+//    /// </summary>
+//    member unit.CancelTrain(slot) = ut.CancelTrain(slot)
+//
+//    /// <summary>
+//    /// Orders the unit to stop morphing.
+//    /// \see Unit::morph, Unit::isMorphing
+//    /// </summary>
+//    member unit.CancelMorph() = ut.CancelMorph()
+//
+//    /// <summary>
+//    /// Orders the unit to cancel a research in progress.
+//    /// \see Unit::research, Unit::isResearching, Unit::getTech
+//    /// </summary>
+//    member unit.CancelResearch() = ut.CancelResearch()
+//
+//    /// <summary>
+//    /// Orders the unit to cancel an upgrade in progress.
+//    /// \see Unit::upgrade, Unit::isUpgrading, Unit::getUpgrade
+//    /// </summary>
+//    member unit.CancelUpgrade() = ut.CancelUpgrade()
+//
+//    /// <summary>
+//    /// Orders the unit to use a tech not requiring a target (ie Stim Pack). Returns true if it is a valid tech
+//    /// </summary>
+//    member unit.UseTech(tech) = ut.UseTech(tech)
+//
+//    /// <summary>
+//    /// Orders the unit to use a tech requiring a position target (ie Dark Swarm). Returns true if it is a valid tech
+//    /// </summary>
+//    member unit.UseTech(tech, pos) = ut.UseTech(tech, Position.pixelToApi pos)
+//
+//    /// <summary>
+//    /// Orders the unit to use a tech requiring a unit target (ie Irradiate). Returns true if it is a valid tech
+//    /// </summary>
+//    member unit.UseTech(tech, target:Unit) = ut.UseTech(tech, target.Unit)
+//
+//    /// <summary>
+//    /// Moves a Flag Beacon to the target location
+//    /// </summary>
+//    member unit.PlaceCop(target) = ut.PlaceCop(Position.tileToApi target)
 
     /// <summary>
     /// Returns the position of the unit on the map
@@ -1068,3 +1117,48 @@ type Unit(ut:Ut) =
     /// Returns true if the unit is able to move to the target position
     /// </summary>
     static member HasPath(unit:Unit, target) = Position.pixelToApi target |> unit.Unit.HasPath
+
+and UnitCommand =
+    | AttackMove of Position<pixel>
+    | Attack of Unit
+    | Build of UnitType * Position<tile>
+    | BuildAddon of UnitType
+    | Train of UnitType
+    | Morph of UnitType
+    | Research of BroodWar.Api.Tech
+    | PerformUpgrade of BroodWar.Api.Upgrade
+    | SetRallyPoint of Position<pixel>
+    | SetRallyUnit of Unit
+    | Move of Position<pixel>
+    | Patrol of Position<pixel>
+    | HoldPosition
+    | Stop
+    | Follow of Unit
+    | Gather of Unit
+    | ReturnCargo
+    | Repair of Unit
+    | Burrow
+    | Unburrow
+    | Cloak
+    | Decloak
+    | Siege
+    | Unsiege
+    | Lift
+    | Land of Position<tile>
+    | Load of Unit
+    | Unload of Unit
+    | UnloadAll
+    | UnloadAllAt of Position<pixel>
+    | RightClickAt of Position<pixel>
+    | RightClickOn of Unit
+    | HaltConstruction
+    | CancelConstruction
+    | CancelAddon
+    | CancelTrain of int
+    | CancelMorph
+    | CancelResearch
+    | CancelUpgrade
+    | UseTech of BroodWar.Api.Tech
+    | UseTechAt of BroodWar.Api.Tech * Position<pixel>
+    | UseTechOn of BroodWar.Api.Tech * Unit
+    | PlaceCop of Position<tile>

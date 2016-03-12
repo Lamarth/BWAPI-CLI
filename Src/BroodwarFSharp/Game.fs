@@ -4,13 +4,16 @@ open Position
 
 [<Sealed>]
 type Game() =
-    do Unit.NewGame ()
+    do Unit.NewGame()
+
     let mutable _UnitsFrame = -1
     let mutable _AllUnits = [||]
     let mutable _OwnUnits = [||]
     let mutable _EnemyUnits = [||]
     let mutable _SeenUnits = [||]
     let mutable _SeenEnemyUnits = [||]
+    let mutable _DestroyedUnits = [||]
+    let mutable _DestroyedEnemyUnits = [||]
 
     let renewUnits () =
         if _UnitsFrame <> Gm.FrameCount then
@@ -18,8 +21,13 @@ type Game() =
             _AllUnits <- Gm.AllUnits |> Seq.map Unit.convert |> Array.ofSeq
             _OwnUnits <- _AllUnits |> Array.filter (fun unit -> unit.Player = Gm.Self)
             _EnemyUnits <- _AllUnits |> Array.filter (fun unit -> Gm.Self.IsEnemy(unit.Player))
-            _SeenUnits <- Unit.seenUnits
-            _SeenEnemyUnits <- _SeenUnits |> Array.filter (fun unit -> Gm.Self.IsEnemy(unit.LastKnownPlayer))
+            
+            // Now renew all visible units
+            _AllUnits |> Array.iter (fun unit -> unit.RenewUnit())
+            _SeenUnits <- Unit.seenUnits |> Seq.map (fun unit -> unit.LastMark) |> Array.ofSeq
+            _SeenEnemyUnits <- _SeenUnits |> Array.filter (fun unit -> Gm.Self.IsEnemy(unit.Player))
+            _DestroyedUnits <- Unit.destroyedUnits
+            _DestroyedEnemyUnits <- Unit.destroyedUnits |> Array.filter (fun unit -> Gm.Self.IsEnemy(unit.Player))
 
     let mutable _MineralsFrame = -1
     let mutable _Minerals = [||]
@@ -95,6 +103,16 @@ type Game() =
     member game.SeenEnemyUnits =
         renewUnits ()
         _SeenEnemyUnits
+
+    /// Returns all units that have been seen and are known to have been destroyed
+    member game.DestroyedUnits =
+        renewUnits ()
+        _DestroyedUnits
+    
+    /// Returns all enemy units that have been seen and are known to have been destroyed
+    member game.DestroyedEnemyUnits =
+        renewUnits ()
+        _DestroyedEnemyUnits
     
     /// Returns the set of all accessible mineral patches
     member game.Minerals =

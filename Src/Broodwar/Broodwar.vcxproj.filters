@@ -99,7 +99,7 @@
       <Filter>Source code files\BWAPI</Filter>
     </ClCompile>
     <ClCompile Include="BWAPI\WalkPosition.cpp">
-      <Filter>Source code files</Filter>
+      <Filter>Source code files\BWAPI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -384,21 +384,21 @@ namespace BroodWar
             return ToList<BWAPI::TilePosition, TilePosition^>(instance->getStartLocations(), &ConvertTilePosition);
         }
             
-        void Game::Write(String^ format, ... array<Object^>^ args)
+        void Game::Write(String^ format, ... cli::array<Object^>^ args)
         {
             IntPtr str = Marshal::StringToHGlobalAnsi(String::Format(format, args));
             instance->printf((const char*)str.ToPointer());
             Marshal::FreeHGlobal(str);
         }
             
-        void Game::SendText(String^ format, ... array<Object^>^ args)
+        void Game::SendText(String^ format, ... cli::array<Object^>^ args)
         {
             IntPtr str = Marshal::StringToHGlobalAnsi(String::Format(format, args));
             instance->sendText((const char*)str.ToPointer());
             Marshal::FreeHGlobal(str);
         }
             
-        void Game::SendText(bool toAllies, String^ format, ... array<Object^>^ args)
+        void Game::SendText(bool toAllies, String^ format, ... cli::array<Object^>^ args)
         {
             IntPtr str = Marshal::StringToHGlobalAnsi(String::Format(format, args));
             instance->sendTextEx(toAllies, (const char*)str.ToPointer());
@@ -501,35 +501,35 @@ namespace BroodWar
         //    instance->setTextSize(size);
         //}
 
-        void Game::DrawText(Position^ p, String^ format, ... array<Object^>^ args)
+        void Game::DrawText(Position^ p, String^ format, ... cli::array<Object^>^ args)
         {
             IntPtr str = Marshal::StringToHGlobalAnsi(String::Format(format, args));
             instance->drawTextMap(*(p->instance), (const char*)str.ToPointer());
             Marshal::FreeHGlobal(str);
         }
 
-        void Game::DrawTextCType(Api::Enum::CoordinateType ctype, int x, int y, String^ format, ... array<Object^>^ args)
+        void Game::DrawTextCType(Api::Enum::CoordinateType ctype, int x, int y, String^ format, ... cli::array<Object^>^ args)
         {
             IntPtr str = Marshal::StringToHGlobalAnsi(String::Format(format, args));
             instance->drawText(static_cast<BWAPI::CoordinateType::Enum>(ctype), x, y, (const char*)str.ToPointer());
             Marshal::FreeHGlobal(str);
         }
             
-        void Game::DrawTextMap(int x, int y, String^ format, ... array<Object^>^ args)
+        void Game::DrawTextMap(int x, int y, String^ format, ... cli::array<Object^>^ args)
         {
             IntPtr str = Marshal::StringToHGlobalAnsi(String::Format(format, args));
             instance->drawTextMap(x, y, (const char*)str.ToPointer());
             Marshal::FreeHGlobal(str);
         }
             
-        void Game::DrawTextMouse(int x, int y, String^ format, ... array<Object^>^ args)
+        void Game::DrawTextMouse(int x, int y, String^ format, ... cli::array<Object^>^ args)
         {
             IntPtr str = Marshal::StringToHGlobalAnsi(String::Format(format, args));
             instance->drawTextMouse(x, y, (const char*)str.ToPointer());
             Marshal::FreeHGlobal(str);
         }
             
-        void Game::DrawTextScreen(int x, int y, String^ format, ... array<Object^>^ args)
+        void Game::DrawTextScreen(int x, int y, String^ format, ... cli::array<Object^>^ args)
         {
             IntPtr str = Marshal::StringToHGlobalAnsi(String::Format(format, args));
             instance->drawTextScreen(x, y, (const char*)str.ToPointer());

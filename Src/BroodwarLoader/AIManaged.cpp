@@ -47,13 +47,13 @@ namespace BroodWar
 					Util::Log(String::Format("Could not load type {0}", type));
 					return;
 				}
-				ConstructorInfo^ constructor = module->GetConstructor(gcnew array<Type^> { });
+				ConstructorInfo^ constructor = module->GetConstructor(gcnew cli::array<Type^> { });
 				if(constructor == nullptr)
 				{
 					Util::Log(String::Format("Could not find constructor for type {0}", type));
 					return;
 				}
-				aiBase = dynamic_cast<AiBase^>(constructor->Invoke(gcnew array<Object^> { }));
+				aiBase = dynamic_cast<AiBase^>(constructor->Invoke(gcnew cli::array<Object^> { }));
 				if(aiBase == nullptr)
 				{
 					Util::Log(String::Format("Could not create instance of type {0}", type));

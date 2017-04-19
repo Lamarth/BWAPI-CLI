@@ -118,7 +118,7 @@ Assembly^ ResolveAssembly(Object ^sender, ResolveEventArgs ^e)
 {
 	String^ folder = Path::GetDirectoryName(Assembly::GetExecutingAssembly()->Location);
 	AssemblyName^ assemblyName = gcnew AssemblyName(e->Name);
-	for each (String^ extension in gcnew array<String^> { ".dll", ".exe" })
+	for each (String^ extension in gcnew cli::array<String^> { ".dll", ".exe" })
 	{
 		String^ fileName = Path::Combine(folder, assemblyName->Name + extension);
 		try

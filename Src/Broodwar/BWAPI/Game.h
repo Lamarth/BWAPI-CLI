@@ -415,19 +415,19 @@ namespace BroodWar
             /// <summary>
             /// Prints text on the screen. Text is not sent to other players in multiplayer games
             /// </summary>
-            static void Write(String^ format, ... array<Object^>^ args);
+            static void Write(String^ format, ... cli::array<Object^>^ args);
             
             /// <summary>
             /// Sends text to other players - as if it were entered in chat. In single player games and replays, this will just print the text on the screen.
             /// If the game is a single player match and not a replay, then this function can be used to execute cheat codes, i.e. Broodwar->sendText("show me the money")
             /// </summary>
-            static void SendText(String^ format, ... array<Object^>^ args);
+            static void SendText(String^ format, ... cli::array<Object^>^ args);
             
             /// <summary>
             /// Sends text to other players - as if it were entered in chat. In single player games and replays, this will just print the text on the screen.
             /// If the game is a single player match and not a replay, then this function can be used to execute cheat codes, i.e. Broodwar->sendText("show me the money")
             /// </summary>
-            static void SendText(bool toAllies, String^ format, ... array<Object^>^ args);
+            static void SendText(bool toAllies, String^ format, ... cli::array<Object^>^ args);
             
             /// <summary>
             /// Returns true if Broodwar is in a game. Returns false for lobby and menu screens
@@ -528,15 +528,15 @@ namespace BroodWar
             /// <summary>
             /// Draws text on the screen at the given position. Text can be drawn in different colors by using the following control characters: TODO: add image from wiki
             /// </summary>
-            static void DrawText(Position^ p, String^ format, ... array<Object^>^ args);
+            static void DrawText(Position^ p, String^ format, ... cli::array<Object^>^ args);
 
-            static void DrawTextCType(Api::Enum::CoordinateType ctype, int x, int y, String^ format, ... array<Object^>^ args);
+            static void DrawTextCType(Api::Enum::CoordinateType ctype, int x, int y, String^ format, ... cli::array<Object^>^ args);
             
-            static void DrawTextMap(int x, int y, String^ format, ... array<Object^>^ args);
+            static void DrawTextMap(int x, int y, String^ format, ... cli::array<Object^>^ args);
             
-            static void DrawTextMouse(int x, int y, String^ format, ... array<Object^>^ args);
+            static void DrawTextMouse(int x, int y, String^ format, ... cli::array<Object^>^ args);
             
-            static void DrawTextScreen(int x, int y, String^ format, ... array<Object^>^ args);
+            static void DrawTextScreen(int x, int y, String^ format, ... cli::array<Object^>^ args);
             
             /// <summary>
             /// Draws a box on the screen, with the given color. If isSolid is true, the entire box will be rendered, otherwise just the outline will be drawn
